@@ -112,7 +112,7 @@ jobs:
           gem install bundler
           bundle install --jobs 4
 
-      - name: Wait for MySQL to be ready  # MySQL이 준비될 때까지 대기
+      - name: Wait for MySQL to be ready
         run: |
           until mysqladmin ping -h 127.0.0.1 --silent; do
             echo "Waiting for MySQL..."
@@ -122,12 +122,13 @@ jobs:
       - name: Run database migrations
         env:
           RAILS_ENV: test
+          DATABASE_URL: mysql2://root:@127.0.0.1:3306/blog_app_test  # TCP 연결 설정
         run: bundle exec bin/rails db:migrate
 
       - name: Run tests
         env:
           RAILS_ENV: test
-          DATABASE_URL: mysql2://127.0.0.1:3306/blog_app_test  # TCP로 연결
+          DATABASE_URL: mysql2://root:@127.0.0.1:3306/blog_app_test
         run: bundle exec bin/rails db:test:prepare test test:system
 
       - name: Keep screenshots from failed system tests
