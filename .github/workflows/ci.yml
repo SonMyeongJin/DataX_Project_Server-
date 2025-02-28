@@ -82,12 +82,14 @@ jobs:
 
     services:
       mysql:
-        image: mysql
+        image: mysql:5.7
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_ROOT_PASSWORD: ""
+          MYSQL_DATABASE: blog_app_test
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --health-cmd="mysqladmin ping -h 127.0.0.1 --silent" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - name: Install packages
@@ -110,6 +112,13 @@ jobs:
           gem install bundler
           bundle install --jobs 4
 
+      - name: Wait for MySQL to be ready  # MySQL이 준비될 때까지 대기
+        run: |
+          until mysqladmin ping -h 127.0.0.1 --silent; do
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+
       - name: Run database migrations
         env:
           RAILS_ENV: test
@@ -118,7 +127,7 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
-          DATABASE_URL: mysql2://127.0.0.1:3306
+          DATABASE_URL: mysql2://127.0.0.1:3306/blog_app_test  # TCP로 연결
         run: bundle exec bin/rails db:test:prepare test test:system
 
       - name: Keep screenshots from failed system tests
