@@ -110,6 +110,11 @@ jobs:
           gem install bundler
           bundle install --jobs 4
 
+      - name: Run database migrations
+        env:
+          RAILS_ENV: test
+        run: bundle exec bin/rails db:migrate
+
       - name: Run tests
         env:
           RAILS_ENV: test
