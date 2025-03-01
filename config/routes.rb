@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   # 기본 루트 설정 (로그인 후 게시글 목록 페이지로 이동)
   root "posts#index"
 
+  # 게시글 관련 경로 (index, show, create, update, destroy)
+  resources :posts, only: [:index, :show, :create, :update, :destroy]
+
   # Health check 및 PWA 파일 제공
   get "up" => "rails/health#show", as: :rails_health_check
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
