@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
   # Devise의 기본 컨트롤러를 오버라이드하여 JSON 응답을 반환하도록 설정
   devise_for :users, controllers: {
-    registrations: 'users/registrations',
-    sessions: 'users/sessions'
+    registrations: "users/registrations",
+    sessions: "users/sessions"
   }
 
   # 기본 루트 설정 (로그인 후 게시글 목록 페이지로 이동)
