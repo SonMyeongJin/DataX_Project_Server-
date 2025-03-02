@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   # Devise의 기본 컨트롤러를 오버라이드하여 JSON 응답을 반환하도록 설정
-  devise_for :users, controllers: {
+  devise_for :users, defaults: { format: :json }, controllers: {
     registrations: "users/registrations",
     sessions: "users/sessions"
   }
