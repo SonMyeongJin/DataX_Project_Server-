@@ -4,8 +4,10 @@ one:
   name: Example User One
   email: userone@example.com
   encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+  jti: <%= SecureRandom.uuid %>
 
 two:
   name: Example User Two
   email: usertwo@example.com
   encrypted_password: <%= Devise::Encryptor.digest(User, 'password123') %>
+  jti: <%= SecureRandom.uuid %>
