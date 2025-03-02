@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   resources :posts, only: [:index, :show, :create, :update, :destroy]
 
   # 태그 관련 경로 (CRUD 기능 포함)
-  resources :tags
+  resources :tags, only: [:index, :show, :create, :update, :destroy]
 
   # Health check 및 PWA 파일 제공
   get "up" => "rails/health#show", as: :rails_health_check

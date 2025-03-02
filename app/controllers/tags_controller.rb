@@ -9,7 +9,11 @@ class TagsController < ApplicationController
 
   # GET /tags/1
   def show
-    render json: @tag
+    render json: {
+      id: @tag.id,
+      name: @tag.name,
+      posts: @tag.posts.select(:id, :title, :content, :user_id, :category_id, :created_at, :updated_at)
+    }
   end
 
   # POST /tags
@@ -39,12 +43,14 @@ class TagsController < ApplicationController
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
+  # 특정 태그 조회
   def set_tag
     @tag = Tag.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "태그를 찾을 수 없습니다." }, status: :not_found
   end
 
-  # Only allow a list of trusted parameters through.
+  # 허용된 파라미터
   def tag_params
     params.require(:tag).permit(:name)
   end
