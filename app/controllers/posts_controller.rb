@@ -25,16 +25,17 @@ class PostsController < ApplicationController
 
   # 게시물 수정
   def update
-    if @post.user == current_user && @post.update(post_params)
-      render json: @post
-    else
-      render json: { error: "수정 권한이 없거나 유효하지 않은 요청입니다." }, status: :unauthorized
-    end
-  end
+   if @post.user == current_user && @post.update(post_params)
+     redirect_to @post # 수정 성공 시 게시물로 리디렉트
+   else
+     render json: { error: "수정 권한이 없거나 유효하지 않은 요청입니다." }, status: :unauthorized
+   end
+ end
 
   # 게시물 삭제
   def destroy
     if @post.user == current_user
+      @post.comments.destroy_all # 모든 관련된 댓글 삭제
       @post.destroy
       head :no_content
     else
