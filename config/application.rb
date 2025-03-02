@@ -2,26 +2,33 @@ require_relative "boot"
 
 require "rails/all"
 
-# Require the gems listed in Gemfile, including any gems
-# you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
 module BlogApp
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.2
 
-    # Please, add to the `ignore` list any other `lib` subdirectories that do
-    # not contain `.rb` files, or that should not be reloaded or eager loaded.
-    # Common ones are `templates`, `generators`, or `middleware`, for example.
-    config.autoload_lib(ignore: %w[assets tasks])
+    # API 모드 설정 (뷰 렌더링이 필요 없을 경우 활성화)
+    config.api_only = true
 
-    # Configuration for the application, engines, and railties goes here.
-    #
-    # These settings can be overridden in specific environments using the files
-    # in config/environments, which are processed later.
-    #
-    # config.time_zone = "Central Time (US & Canada)"
-    # config.eager_load_paths << Rails.root.join("extras")
+    # CORS 설정 (Vue.js에서 요청 가능하도록 허용)
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins 'http://localhost:8080'  # Vue.js 개발 서버
+        resource '*',
+          headers: :any,
+          methods: [:get, :post, :patch, :put, :delete, :options],
+          expose: ['Authorization'],
+          credentials: true
+      end
+    end
+
+    # 세션 및 쿠키 지원 (JWT 인증 시 필요)
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore
+    config.middleware.use Rack::MethodOverride
+
+    # 디버깅을 위한 로깅 설정
+    config.log_level = :debug
   end
 end

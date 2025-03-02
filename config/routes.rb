@@ -1,20 +1,22 @@
 Rails.application.routes.draw do
-  # Devise의 기본 컨트롤러를 오버라이드하여 JSON 응답을 반환하도록 설정
+  # Devise 관련 경로 (API 전용)
   devise_for :users, defaults: { format: :json }, controllers: {
     registrations: "users/registrations",
-    sessions: "users/sessions"
+    sessions: "users/sessions",
+    passwords: "users/passwords",   # 비밀번호 재설정 (선택)
+    confirmations: "users/confirmations" # 이메일 인증 (선택)
   }
 
-  # 기본 루트 설정 (로그인 후 게시글 목록 페이지로 이동)
-  root "posts#index"
+  # API 전용이므로 root 경로 제거 가능
+  # root "posts#index"
 
-  # 게시글 관련 경로 (index, show, create, update, destroy)
+  # 게시글 관련 API (index, show, create, update, destroy)
   resources :posts, only: [:index, :show, :create, :update, :destroy]
 
-  # 태그 관련 경로 (CRUD 기능 포함)
+  # 태그 관련 API (index, show, create, update, destroy)
   resources :tags, only: [:index, :show, :create, :update, :destroy]
 
-  # Health check 및 PWA 파일 제공
+  # PWA 관련 API (필요한 경우만 유지)
   get "up" => "rails/health#show", as: :rails_health_check
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
