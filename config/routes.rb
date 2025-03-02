@@ -11,6 +11,9 @@ Rails.application.routes.draw do
   # 게시글 관련 경로 (index, show, create, update, destroy)
   resources :posts, only: [:index, :show, :create, :update, :destroy]
 
+  # 태그 관련 경로 (CRUD 기능 포함)
+  resources :tags
+
   # Health check 및 PWA 파일 제공
   get "up" => "rails/health#show", as: :rails_health_check
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
