@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show]  # 로그인 필요
+  before_action :authenticate_user!, except: [:index, :show]
   before_action :set_post, only: [:show, :update, :destroy]
 
   # 전체 게시물 조회
@@ -15,9 +15,9 @@ class PostsController < ApplicationController
 
   # 게시물 작성
   def create
-    post = current_user.posts.build(post_params)
+    post = current_user.posts.build(post_params.except(:tag_names))
     if post.save
-      update_post_tags(post, params[:post][:tag_ids] || [])
+      handle_tags(post, params[:post][:tag_names])
       render json: post, include: [:user, :category, :tags], status: :created
     else
       render json: { errors: post.errors.full_messages }, status: :unprocessable_entity
@@ -26,8 +26,8 @@ class PostsController < ApplicationController
 
   # 게시물 수정
   def update
-    if @post.user == current_user && @post.update(post_params)
-      update_post_tags(@post, params[:post][:tag_ids] || nil) # ❗️ 태그가 없으면 변경하지 않음
+    if @post.user == current_user && @post.update(post_params.except(:tag_names))
+      handle_tags(@post, params[:post][:tag_names])
       render json: @post, include: [:user, :category, :tags]
     else
       render json: { error: "수정 권한이 없거나 유효하지 않은 요청입니다." }, status: :unauthorized
@@ -37,8 +37,8 @@ class PostsController < ApplicationController
   # 게시물 삭제
   def destroy
     if @post.user == current_user
-      @post.comments.destroy_all # 모든 관련된 댓글 삭제
-      @post.post_tags.destroy_all # 모든 관련된 태그 연결 삭제
+      @post.comments.destroy_all
+      @post.tags.destroy_all
       @post.destroy
       head :no_content
     else
@@ -55,22 +55,15 @@ class PostsController < ApplicationController
   end
 
   def post_params
-    params.require(:post).permit(:title, :content, :category_id, tag_ids: [])
+    params.require(:post).permit(:title, :content, :category_id)
   end
 
-  def update_post_tags(post, tag_ids)
-    return if tag_ids.nil? # ❗️ tag_ids가 없으면 기존 태그 유지
+  def handle_tags(post, tag_names)
+    return if tag_names.blank?
 
-    current_tags = post.tags.pluck(:id)
-    new_tags = tag_ids.map(&:to_i) - current_tags
-    removed_tags = current_tags - tag_ids.map(&:to_i)
-
-    # 새로운 태그 추가
-    new_tags.each do |tag_id|
-      post.post_tags.create(tag_id: tag_id)
+    tag_ids = tag_names.map do |name|
+      Tag.find_or_create_by(name: name).id
     end
-
-    # 삭제된 태그 제거
-    post.post_tags.where(tag_id: removed_tags).destroy_all
+    post.tag_ids = tag_ids
   end
 end
