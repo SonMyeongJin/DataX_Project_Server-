@@ -31,7 +31,7 @@ http://43.203.118.99:3000/
     2. Connect Rails project to MySQL database
     3. Define Models based on ERD (Attributes)
     4. Write API Specification
-        - [Notion API URL](https://son-myeongjin.notion.site/datax-project-api?v=1aa07b1a3de181e38b81000cf2237f46)
+        - ### [Notion API URL](https://son-myeongjin.notion.site/datax-project-api?v=1aa07b1a3de181e38b81000cf2237f46)
         - ![](/ReadmeSrc/datax_notion.png)
     5. Implement Login Functionality with JWT Token
         - Use the Devise library in Rails.
@@ -65,16 +65,16 @@ http://43.203.118.99:3000/
 
 - Tag Functionality
     - Create Tags
-      Tags can be added when creating a post.
-      If a tag already exists, it returns the existing ID; otherwise, it assigns a new ID and returns it.
+      - Tags can be added when creating a post.
+      - If a tag already exists, it returns the existing ID; otherwise, it assigns a new ID and returns it.
 
     - Filtering with Tags
-      If a GET request includes a tag ID, it returns an array of posts with the same tag.
+      - If a GET request includes a tag ID, it returns an array of posts with the same tag.
 
     - ![](/ReadmeSrc/datax_tag.jpeg)
 
 # Key Enhancements
 - Security Enhancement with JTI for Login
-  Using only JWT tokens for login allows access even after logging out, as the token remains valid. Therefore, JTI was implemented to ensure the JWT token can be rejected, adding an extra layer of security.
+  - Using only JWT tokens for login allows access even after logging out, as the token remains valid. Therefore, JTI was implemented to ensure the JWT token can be rejected, adding an extra layer of security.
 
 - ![](/ReadmeSrc/datax_login.jpeg)
