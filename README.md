@@ -7,7 +7,8 @@ This project is a blog platform implemented using Ruby on Rails and Vue.js. It i
 [Client Github](https://github.com/SonMyeongJin/DataX_Project_Client)
 
 [API Deployed]
-http://43.203.118.99:3000/
+~~http://43.203.118.99:3000/~~
+(2025.04.03 closed)
 - Requests are received via HTTP, and responses are returned in JSON format within the HTTP Body.
 
 ## Development Environment
